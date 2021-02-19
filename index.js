@@ -2,10 +2,12 @@ var $start = document.querySelector('#start');
 var $game = document.querySelector('#game');
 var $time = document.querySelector('#time');
 var $game_record = document.querySelector('#result');
-var $timeHeader = document.querySelector('#time-header')
-var $resultHeader = document.querySelector('#result-header')
+var $timeHeader = document.querySelector('#time-header');
+var $resultHeader = document.querySelector('#result-header');
+var $time_counter = document.querySelector('#game-time');
 
 var time_minus;
+var timer;
 var square; //for quares generation 
 var score = 0;
 var square_size;
@@ -13,18 +15,31 @@ var game_size;
 var max_top_deviation; //максималное отклонение по отношению к игровому пол
 var max_left_deviation; //максималное отклонение по отношению к игровому полю
 var GamePlay = false; //If game has begun
+var color_shelf = ["red", "blue", "green", "black", "pink", "violet", "orange", "yellow", "grey"]
 
 
 $start.addEventListener('click', startGame)
 $game.addEventListener('click', square_click);
+$time_counter.addEventListener('input', set_countdownTimer);
 
+//code optimisation
+function show($el) {
+    $el.classList.remove('hide');
+}
+
+function hide($el) {
+    $el.classList.add('hide');
+
+}
+//-----------------
 
 function startGame() {
     score = 0;
-    $timeHeader.classList.remove('hide');
-    $resultHeader.classList.add('hide');
+
+    set_countdownTimer();
+    $time_counter.setAttribute('disabled', 'true');
     GamePlay = true;
-    $start.classList.add('hide');
+    hide($start);
     $game.style.backgroundColor = "White";
 
     var game_interval = setInterval(function() {
@@ -44,16 +59,20 @@ function startGame() {
 
 function gameOver() {
     GamePlay = false;
-    $start.classList.remove('hide'); //return the button
+    $time_counter.removeAttribute('disabled');
+    show($start); //return the button
     $game.innerHTML = '';
     $game.style.backgroundColor = "Grey";
-    $timeHeader.classList.add('hide');
-    $resultHeader.classList.remove('hide');
+    hide($timeHeader);
+    show($resultHeader);
     game_rec();
 }
 
 function set_countdownTimer() {
-
+    timer = +$time_counter.value;
+    $time.textContent = timer.toFixed(1);
+    show($timeHeader);
+    hide($resultHeader);
 }
 
 function game_rec() {
@@ -94,4 +113,8 @@ function square_generator() {
 
 function getRand(min, max) {
     return Math.floor(Math.random() * (max - min) + min); //1.9130130 -> 1
+}
+
+function color_choose() {
+
 }
